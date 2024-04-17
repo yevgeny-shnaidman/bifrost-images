@@ -1,12 +1,14 @@
 ARG KERNEL_VERSION=5.14.0-427.el9.x86_64
 
+FROM quay.io/yshnaidm/qualcomm-sources:latest as source
+
 # DTK image
 FROM quay.io/fabiendupont/driver-toolkit:5.14.0-427.el9 as build
 ARG VENDOR=QUALCOMM
 USER root
-COPY $VENDOR/kernel-drivers /kernel-drivers
+COPY --from=source /kernel-drivers-source /kernel-drivers-source
 
-WORKDIR /kernel-drivers
+WORKDIR /kernel-drivers-source
 
 RUN ./dkms_prebuild.sh 5.14.0-427.el9.x86_64 /usr/src/kernels/5.14.0-427.el9.x86_64
 RUN make KERNELRELEASE=5.14.0-427.el9.x86_64
@@ -17,11 +19,11 @@ FROM quay.io/kwozyman/magma:basicbootc
 ARG VENDOR=QUALCOMM
 
 RUN mkdir -p /lib/modules/5.14.0-427.el9.x86_64/kernel/qaic
-COPY --from=build /kernel-drivers/mhi/host/mhi.ko /lib/modules/5.14.0-427.el9.x86_64/kernel/qaic/mhi.ko
-COPY --from=build /kernel-drivers/qaic/qaic.ko /lib/modules/5.14.0-427.el9.x86_64/kernel/qaic/qaic.ko
+COPY --from=build /kernel-drivers-source/mhi/host/mhi.ko /lib/modules/5.14.0-427.el9.x86_64/kernel/qaic/mhi.ko
+COPY --from=build /kernel-drivers-source/qaic/qaic.ko /lib/modules/5.14.0-427.el9.x86_64/kernel/qaic/qaic.ko
 RUN depmod 5.14.0-427.el9.x86_64
 
-COPY $VENDOR/qaic-platform-sdk-1.14.2.0 /qaic-platform-sdk-1.14.2.0
+COPY --from=source /sdk-source //sdk-source
 
 COPY --chmod=744 ./rhsm-register /usr/local/bin/rhsm-register
 
@@ -33,5 +35,5 @@ RUN --mount=type=secret,id=RHSM_ORG,target=/run/secrets/RHSM_ORG \
     && dnf clean all \
     && rm /usr/local/bin/rhsm-register
 
-WORKDIR /qaic-platform-sdk-1.14.2.0
+WORKDIR /sdk-source
 RUN ./x86_64/rpm/install.sh --container --custom_kmd
