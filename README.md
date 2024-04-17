@@ -9,3 +9,15 @@ Instructions:
    <vendor>: which vendor image you want to build ( AMD or QUALCOMM). vendor must be equal to one of the directories
    <resulting-bifrost-image>: the name for the output bifrost image
    example: container-image.sh AMD quay.io/yshnaidm/amd-bifrost
+
+
+Qualcomm testng:
+1) /opt/qti-aic/tools
+2) qaic-util
+3) qaic-util -q
+   Status: Ready
+4 ls /dev/accel
+  Accel0
+5) ls /sys/bus/mhi/devices/
+CONTROL
+mhi0_QAIC_CONTROL

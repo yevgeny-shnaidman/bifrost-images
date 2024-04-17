@@ -1,10 +1,8 @@
 #FROM quay.io/yshnaidm/rhel-bootc:9.4
 FROM quay.io/kwozyman/magma:basicbootc
 
-ARG VENDOR=AMD
-
 COPY --chmod=744 ./rhsm-register /usr/local/bin/rhsm-register
-COPY $VENDOR/rocm.repo /etc/yum.repos.d/rocm.repo
+COPY AMD/rocm.repo /etc/yum.repos.d/rocm.repo
 
 RUN --mount=type=secret,id=RHSM_ORG,target=/run/secrets/RHSM_ORG \
     --mount=type=secret,id=RHSM_ACTIVATIONKEY,target=/run/secrets/RHSM_ACTIVATIONKEY \
@@ -17,6 +15,6 @@ RUN --mount=type=secret,id=RHSM_ORG,target=/run/secrets/RHSM_ORG \
     && dnf clean all \
     && rm /usr/local/bin/rhsm-register
 
-COPY $VENDOR/rocm.conf /etc/ld.so.conf.d/rocm.conf
+COPY AMD/rocm.conf /etc/ld.so.conf.d/rocm.conf
 RUN ldconfig
 RUN export PATH=$PATH:/opt/rocm-6.0.2/bin
