@@ -1,0 +1,5 @@
+[[customizations.user]]
+name = "rhel-ai"
+password = "rhel-ai"
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKtyLky24ZggAjiO2WMnr+qRjSoWYb9wI55XEXSLY1lV yevgeny@localhost.localdomain"
+groups = [ "wheel" ]
