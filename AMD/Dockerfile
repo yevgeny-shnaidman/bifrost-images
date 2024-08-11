@@ -16,14 +16,14 @@ FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 ARG KERNEL_VERSION=5.14.0-427.16.1.el9_4.x86_64
 RUN echo $KERNEL_VERSION
 
-COPY --from=builder /amdgpu-drivers-source/amd/amdgpu/amdgpu.ko /opt/lib/modules/${KERNEL_VERSION}/amd/amdgpu/amdgpu.ko
-COPY --from=builder /amdgpu-drivers-source/amd/amdkcl/amdkcl.ko /opt/lib/modules/${KERNEL_VERSION}/amd/amdkcl/amdkcl.ko
-COPY --from=builder /amdgpu-drivers-source/amd/amdxcp/amdxcp.ko /opt/lib/modules/${KERNEL_VERSION}/amd/amdxcp/amdxcp.ko
-COPY --from=builder /amdgpu-drivers-source/scheduler/amd-sched.ko /opt/lib/modules/${KERNEL_VERSION}/scheduler/amd-sched.ko
-COPY --from=builder /amdgpu-drivers-source/ttm/amdttm.ko /opt/lib/modules/${KERNEL_VERSION}/ttm/amdttm.ko
-COPY --from=builder /amdgpu-drivers-source/amddrm_buddy.ko /opt/lib/modules/${KERNEL_VERSION}/amddrm_buddy.ko
-COPY --from=builder /amdgpu-drivers-source/amddrm_ttm_helper.ko /opt/lib/modules/${KERNEL_VERSION}/amddrm_ttm_helper.ko
-
+COPY --from=builder /amdgpu-drivers-source/amd/amdgpu/amdgpu.ko /lib/modules/${KERNEL_VERSION}/amd/amdgpu/amdgpu.ko
+COPY --from=builder /amdgpu-drivers-source/amd/amdkcl/amdkcl.ko /lib/modules/${KERNEL_VERSION}/amd/amdkcl/amdkcl.ko
+COPY --from=builder /amdgpu-drivers-source/amd/amdxcp/amdxcp.ko /lib/modules/${KERNEL_VERSION}/amd/amdxcp/amdxcp.ko
+COPY --from=builder /amdgpu-drivers-source/scheduler/amd-sched.ko /lib/modules/${KERNEL_VERSION}/scheduler/amd-sched.ko
+COPY --from=builder /amdgpu-drivers-source/ttm/amdttm.ko /lib/modules/${KERNEL_VERSION}/ttm/amdttm.ko
+COPY --from=builder /amdgpu-drivers-source/amddrm_buddy.ko /lib/modules/${KERNEL_VERSION}/amddrm_buddy.ko
+COPY --from=builder /amdgpu-drivers-source/amddrm_ttm_helper.ko /lib/modules/${KERNEL_VERSION}/amddrm_ttm_helper.ko
+RUN rm /lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko.xz
 RUN depmod $KERNEL_VERSION
 
 COPY --chmod=744 ./rhsm-register /usr/local/bin/rhsm-register
